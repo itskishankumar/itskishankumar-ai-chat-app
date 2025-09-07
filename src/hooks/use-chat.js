@@ -1,17 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { GoogleGenAI } from "@google/genai";
-import { parseModelToOurs, parseOursToModel } from "@/lib/transformer";
+import {
+  generateUserPrompt,
+  parseModelToOurs,
+  parseOursToModel,
+} from "@/lib/transformer";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY,
 });
-
-function createUserPrompt(prompt) {
-  return {
-    role: "user",
-    prompt,
-  };
-}
 
 export function useChat(chatId, model) {
   const [currentlyStreamingMessage, setCurrentlyStreamingMessage] =
@@ -29,16 +26,43 @@ export function useChat(chatId, model) {
     });
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem(chatId, JSON.stringify({ history: messages }));
+  }, [messages]);
+
   async function sendMessage(message) {
+    const prompt = generateUserPrompt(message);
+    setMessages([...messages, prompt]);
     const stream = await chatRef.current.sendMessageStream({
       message,
     });
-    // parseModelToOurs({ type: "text", data: response.text }, "gemini-2.5-flash");
+    // parseModelToOurs({ type: "text", data: response.text }, model);
     for await (const chunk of stream) {
-      console.log(chunk.text);
-      console.log("_".repeat(80));
+      console.log(chunk);
     }
   }
 
-  return { messages, sendMessage };
+  async function generateImage(message) {
+    const history = parseOursToModel(messages, model);
+    const prompt = generateUserPrompt(message);
+    setMessages([...messages, prompt]);
+    const response = await ai.models.generateContent({
+      model,
+      contents: [...history, ...parseOursToModel([prompt], model)],
+    });
+    for (const part of response.candidates[0].content.parts) {
+      let response;
+      if (part.text) {
+        response = parseModelToOurs({ type: "text", data: part.text }, model);
+      } else if (part.inlineData) {
+        response = parseModelToOurs(
+          { type: part.inlineData.mimeType, data: part.inlineData.data },
+          model,
+        );
+      }
+      setMessages((messages) => [...messages, response]);
+    }
+  }
+
+  return { messages, currentlyStreamingMessage, sendMessage, generateImage };
 }

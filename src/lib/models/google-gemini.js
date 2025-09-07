@@ -19,8 +19,8 @@ function mapTextToTextPrompt(data) {
 
 function mapTextResponseToText(data) {
   return {
-    type: "text",
-    data: data.data,
+    role: "model",
+    data: [{ type: "text", data: data.data }],
   };
 }
 
@@ -35,8 +35,13 @@ function mapImageToImagePrompt(data) {
 
 function mapImageResponseToImage(inlineData) {
   return {
-    type: inlineData.mimeType,
-    data: inlineData.data,
+    role: "model",
+    data: [
+      {
+        type: inlineData.type,
+        data: inlineData.data,
+      },
+    ],
   };
 }
 
@@ -46,5 +51,6 @@ export function parseModelToOurs(response) {
 
 const modelToOursMapper = {
   text: mapTextResponseToText,
-  image: mapImageResponseToImage,
+  "image/png": mapImageResponseToImage,
+  "image/jpeg": mapImageResponseToImage,
 };
