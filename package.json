@@ -9,7 +9,6 @@
     "lint": "eslint",
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write ."
-
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

@@ -1,8 +1,7 @@
 import "./globals.css";
 
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
-
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 
 export const metadata = {
   title: "itskishankumar ChatApp",
@@ -11,16 +10,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-      <html lang='en'>
+    <html lang="en">
       <body>
-      <SidebarProvider>
-          <AppSidebar/>
-          <SidebarTrigger/>
+        <SidebarProvider className="p-4">
+          <AppSidebar />
+          <SidebarTrigger />
           {children}
-      </SidebarProvider>
+        </SidebarProvider>
       </body>
-</html>
-);
+    </html>
+  );
 }
-
-
