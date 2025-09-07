@@ -1,6 +1,6 @@
 import "./globals.css";
 
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 
 export const metadata = {
@@ -14,7 +14,6 @@ export default function RootLayout({ children }) {
       <body>
         <SidebarProvider className="p-4">
           <AppSidebar />
-          <SidebarTrigger />
           {children}
         </SidebarProvider>
       </body>
