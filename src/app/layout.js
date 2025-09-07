@@ -1,7 +1,7 @@
 import "./globals.css";
 
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
+import { UseSidebar } from "@/components/useSidebar";
 
 export const metadata = {
   title: "itskishankumar ChatApp",
@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <SidebarProvider className="p-4">
-          <AppSidebar />
+          <UseSidebar />
           {children}
         </SidebarProvider>
       </body>

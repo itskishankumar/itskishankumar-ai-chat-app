@@ -11,18 +11,20 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
+import Link from "next/link";
+
 const items = [];
 
-export function AppSidebar() {
+export function UseSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenuButton asChild>
-            <a href="/">
+            <Link href="/">
               <MessageCirclePlus />
               <span>New Chat</span>
-            </a>
+            </Link>
           </SidebarMenuButton>
           <SidebarGroupLabel>Chats</SidebarGroupLabel>
           <SidebarGroupContent>
