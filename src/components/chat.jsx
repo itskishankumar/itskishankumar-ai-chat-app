@@ -10,13 +10,13 @@ export default function Chat({ id }) {
     loading,
     messages,
     currentlyStreamingMessage,
-    sendMessage,
-    generateImage,
+    generateTextResponse,
+    generateImageResponse,
   } = useChat(id, "gemini-2.5-flash");
 
   async function handleEnter(input) {
     if (input.trim()) {
-      await sendMessage(input.trim());
+      await generateTextResponse(input.trim());
     }
   }
 

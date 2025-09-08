@@ -60,14 +60,14 @@ export function useChat(chatId, model) {
     }
   }, [messages]);
 
-  async function generateTitle(message) {
+  async function generateTitle(prompt) {
     if (!currentChatId.current) {
       const id = uuidv4();
       currentChatId.current = id;
       window.history.replaceState({}, "", `/chats?id=${id}`);
       const response = await ai.models.generateContent({
         model,
-        contents: `Generate a 3 word title summarising this query for an LLM - ${message}`,
+        contents: `Generate a 3 word title summarising this query for an LLM - ${prompt}`,
       });
       const text = response.text;
       await setChatData(id, { title: text });
@@ -75,14 +75,14 @@ export function useChat(chatId, model) {
     }
   }
 
-  async function sendMessage(message) {
+  async function generateTextResponse(prompt) {
     try {
       setLoading(true);
-      generateTitle(message);
-      const prompt = generateUserPrompt(message);
-      setMessages([...messages, prompt]);
+      generateTitle(prompt);
+      const serializedPrompt = generateUserPrompt(prompt);
+      setMessages([...messages, serializedPrompt]);
       const stream = await chatRef.current.sendMessageStream({
-        message,
+        message: prompt,
       });
       let fullText = "";
       for await (const chunk of stream) {
@@ -102,16 +102,15 @@ export function useChat(chatId, model) {
     }
   }
 
-  async function generateImage(message) {
+  async function generateImageResponse(prompt) {
     try {
       setLoading(true);
-      generateTitle(message);
-      const prompt = generateUserPrompt(message);
-      setMessages([...messages, prompt]);
-      const history = parseOursToModel(messages, model);
+      generateTitle(prompt);
+      const serializedPrompt = generateUserPrompt(prompt);
+      setMessages([...messages, serializedPrompt]);
       const response = await ai.models.generateContent({
         model,
-        contents: [...history, ...parseOursToModel([prompt], model)],
+        contents: [...parseOursToModel([...messages, serializedPrompt], model)],
       });
       for (const part of response.candidates[0].content.parts) {
         let response;
@@ -136,7 +135,7 @@ export function useChat(chatId, model) {
     loading,
     messages,
     currentlyStreamingMessage,
-    sendMessage,
-    generateImage,
+    generateTextResponse,
+    generateImageResponse,
   };
 }
