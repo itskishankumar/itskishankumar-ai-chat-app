@@ -35,7 +35,7 @@ export function useChat(chatId, model) {
       currentChatId.current = chatId;
       const chatData = await getChatData(chatId);
       setMessages(chatData ?? []);
-      const history = parseOursToModel(chatData?.history ?? [], model);
+      const history = parseOursToModel(chatData ?? [], model);
       chatRef.current = ai.chats.create({
         model,
         history,
