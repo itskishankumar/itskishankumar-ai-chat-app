@@ -15,7 +15,9 @@ export default function Chat({ id }) {
   } = useChat(id, "gemini-2.5-flash");
 
   async function handleEnter(input) {
-    await sendMessage(input);
+    if (input.trim()) {
+      await sendMessage(input.trim());
+    }
   }
 
   return (
@@ -55,6 +57,7 @@ export default function Chat({ id }) {
         <Input
           placeholder="Ask me anything"
           onEnter={handleEnter}
+          disabled={loading}
           className="lg:w-1/2 h-16 bg-gray-100"
         />
       </div>
