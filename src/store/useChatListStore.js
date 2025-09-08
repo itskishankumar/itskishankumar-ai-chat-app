@@ -1,8 +1,12 @@
 import { create } from "zustand";
+import { getAllChatsData } from "@/lib/data_utils";
 
 export const useChatListStore = create((set) => ({
   chatsList: [],
-  updateChatList: (chatsList) => set({ chatsList: chatsList }),
+  refreshChatList: async () => {
+    const chats = await getAllChatsData();
+    set({ chatsList: chats });
+  },
   currentChat: "",
   setCurrentChat: (chatId) => set({ currentChat: chatId }),
 }));

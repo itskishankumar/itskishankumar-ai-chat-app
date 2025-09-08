@@ -22,6 +22,7 @@ export function useChat(chatId, model) {
   const chatRef = useRef(null);
   const currentChatId = useRef(null);
   const setCurrentChat = useChatListStore((state) => state.setCurrentChat);
+  const refreshChatList = useChatListStore((state) => state.refreshChatList);
 
   useEffect(() => {
     init();
@@ -69,6 +70,7 @@ export function useChat(chatId, model) {
       });
       const text = response.text;
       await setChatData(id, { title: text });
+      await refreshChatList();
     }
   }
 

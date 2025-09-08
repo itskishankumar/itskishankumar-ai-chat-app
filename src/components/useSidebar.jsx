@@ -19,6 +19,7 @@ import { clsx } from "clsx";
 
 export function UseSidebar() {
   const { chatsList, currentChat } = useChatListStore((state) => state);
+
   return (
     <Sidebar>
       <SidebarContent>
