@@ -18,10 +18,25 @@ export function useChat(chatId, model) {
     useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   const chatRef = useRef(null);
   const currentChatId = useRef(null);
   const refreshChatList = useChatListStore((state) => state.refreshChatList);
+
+  useEffect(() => {
+    if (hydrated && currentChatId.current) {
+      try {
+        setChatData(currentChatId.current, { messages, model });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages, model]);
 
   useEffect(() => {
     init();
@@ -29,6 +44,8 @@ export function useChat(chatId, model) {
 
   async function init() {
     try {
+      setHydrated(false);
+      setMessages([]);
       setLoading(true);
       currentChatId.current = chatId;
       const chatData = await getChatData(chatId);
@@ -41,24 +58,10 @@ export function useChat(chatId, model) {
     } catch (e) {
       console.error(e);
     } finally {
+      setHydrated(true);
       setLoading(false);
     }
   }
-
-  // TODO: Prevent it from being fired initially.
-  useEffect(() => {
-    if (currentChatId.current) {
-      try {
-        setChatData(currentChatId.current, { messages, model });
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: "smooth",
-        });
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }, [messages]);
 
   async function generateTitle(prompt) {
     if (!currentChatId.current) {
