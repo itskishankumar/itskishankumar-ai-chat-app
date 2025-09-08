@@ -9,7 +9,7 @@ export default function Chat({ id }) {
     useChat(id, "gemini-2.5-flash-image-preview");
 
   async function handleEnter(input) {
-    await sendMessage(input);
+    await generateImage(input);
   }
 
   return (
