@@ -1,7 +1,7 @@
 import {
   parseOursToModel as geminiParseOursToModel,
   parseModelToOurs as geminiParseModelToOurs,
-} from "@/lib/models/google-gemini";
+} from "@/lib/transformer/models/google-gemini";
 
 export function generateUserPrompt(message) {
   return {

@@ -4,16 +4,18 @@ import {
   generateUserPrompt,
   parseModelToOurs,
   parseOursToModel,
-} from "@/lib/transformer";
-import { getChatData, setChatData } from "@/lib/data_utils";
+} from "@/lib/transformer/transformer";
+import { getChatData, getChatModel, setChatData } from "@/lib/data_utils";
 import { v4 as uuidv4 } from "uuid";
 import { useChatListStore } from "@/store/useChatListStore";
+import { modelTypes } from "@/lib/constants/models";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY,
 });
 
-export function useChat(chatId, model) {
+export function useChat(chatId) {
+  const [model, setModel] = useState("gemini-2.5-flash");
   const [currentlyStreamingMessage, setCurrentlyStreamingMessage] =
     useState("");
   const [messages, setMessages] = useState([]);
@@ -50,6 +52,8 @@ export function useChat(chatId, model) {
       currentChatId.current = chatId;
       const chatData = await getChatData(chatId);
       setMessages(chatData ?? []);
+      const chatModel = (await getChatModel(chatId)) ?? model;
+      setModel(chatModel);
       const history = parseOursToModel(chatData ?? [], model);
       chatRef.current = ai.chats.create({
         model,
@@ -69,7 +73,7 @@ export function useChat(chatId, model) {
       currentChatId.current = id;
       window.history.replaceState({}, "", `/chats?id=${id}`);
       const response = await ai.models.generateContent({
-        model,
+        model: modelTypes.text.model,
         contents: `Generate a 3 word title summarising this query for an LLM - ${prompt}`,
       });
       const text = response.text;
@@ -136,6 +140,8 @@ export function useChat(chatId, model) {
 
   return {
     loading,
+    model,
+    setModel,
     messages,
     currentlyStreamingMessage,
     generateTextResponse,

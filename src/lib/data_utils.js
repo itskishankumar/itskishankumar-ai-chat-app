@@ -15,6 +15,13 @@ export async function getChatData(chatId) {
   }
 }
 
+export async function getChatModel(chatId) {
+  if (chatId) {
+    const chatData = await db.chats.get(chatId);
+    return chatData.model;
+  }
+}
+
 export async function setChatData(chatId, { messages, model, title }) {
   const updated = await db.chats.update(chatId, {
     ...(messages
