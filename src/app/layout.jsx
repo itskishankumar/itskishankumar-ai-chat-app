@@ -4,7 +4,7 @@ import "./globals.css";
 
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { UseSidebar } from "@/components/useSidebar";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useChatListStore } from "@/store/useChatListStore";
 
 export default function RootLayout({ children }) {
@@ -17,10 +17,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <SidebarProvider>
-          <UseSidebar />
-          {children}
-        </SidebarProvider>
+        <Suspense>
+          <SidebarProvider>
+            <UseSidebar />
+            {children}
+          </SidebarProvider>
+        </Suspense>
       </body>
     </html>
   );
