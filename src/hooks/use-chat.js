@@ -18,6 +18,7 @@ export function useChat(chatId, model) {
   const [currentlyStreamingMessage, setCurrentlyStreamingMessage] =
     useState("");
   const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const chatRef = useRef(null);
 
@@ -54,13 +55,13 @@ export function useChat(chatId, model) {
   }, [messages]);
 
   async function generateTitle(message) {
-    if (!router.query?.id) {
-      const response = await ai.models.generateContent({
-        model,
-        contents: `Generate a 3 word title summarising this query for an LLM - ${message}`,
-      });
-      console.log(response.text);
-    }
+    // if (!router.query?.id) {
+    //   const response = await ai.models.generateContent({
+    //     model,
+    //     contents: `Generate a 3 word title summarising this query for an LLM - ${message}`,
+    //   });
+    //   console.log(response.text);
+    // }
   }
 
   async function sendMessage(message) {
@@ -71,12 +72,22 @@ export function useChat(chatId, model) {
       const stream = await chatRef.current.sendMessageStream({
         message,
       });
-      // parseModelToOurs({ type: "text", data: response.text }, model);
+      setLoading(true);
+      let fullText = "";
       for await (const chunk of stream) {
-        console.log(chunk);
+        fullText += chunk.text;
+        setCurrentlyStreamingMessage(fullText);
       }
+      const response = parseModelToOurs(
+        { type: "text", data: fullText },
+        model,
+      );
+      setMessages((messages) => [...messages, response]);
+      setCurrentlyStreamingMessage("");
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -107,5 +118,11 @@ export function useChat(chatId, model) {
     }
   }
 
-  return { messages, currentlyStreamingMessage, sendMessage, generateImage };
+  return {
+    loading,
+    messages,
+    currentlyStreamingMessage,
+    sendMessage,
+    generateImage,
+  };
 }
