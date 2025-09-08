@@ -1,0 +1,18 @@
+import { db } from "@/lib/db";
+
+export async function getChatData(chatId) {
+  const chatData = await db.chats.get(chatId);
+  return JSON.parse(chatData?.data);
+}
+
+export async function setChatData(chatId, { messages, model }) {
+  await db.chats.put({
+    id: chatId,
+    ...(messages
+      ? {
+          data: JSON.stringify(messages),
+        }
+      : {}),
+    model,
+  });
+}

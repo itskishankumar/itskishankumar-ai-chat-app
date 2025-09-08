@@ -5,8 +5,8 @@ import {
   parseModelToOurs,
   parseOursToModel,
 } from "@/lib/transformer";
-import { db } from "@/lib/db";
 import { useRouter } from "next/navigation";
+import { getChatData, setChatData } from "@/lib/data_utils";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY,
@@ -28,9 +28,8 @@ export function useChat(chatId, model) {
 
   async function init() {
     try {
-      let chatData = await db.chats.get(chatId);
-      chatData = JSON.parse(chatData?.data);
-      setMessages(chatData?.history ?? []);
+      const chatData = await getChatData(chatId);
+      setMessages(chatData ?? []);
       const history = parseOursToModel(chatData?.history ?? [], model);
       chatRef.current = ai.chats.create({
         model,
@@ -44,7 +43,7 @@ export function useChat(chatId, model) {
   // TODO: Prevent it from being fired initially.
   useEffect(() => {
     try {
-      db.chats.put({ id: chatId, data: JSON.stringify({ history: messages }) });
+      setChatData(chatId, { messages, model });
       window.scrollTo({
         top: document.documentElement.scrollHeight,
         behavior: "smooth",
