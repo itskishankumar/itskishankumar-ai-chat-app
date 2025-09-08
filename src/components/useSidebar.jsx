@@ -19,7 +19,6 @@ import { clsx } from "clsx";
 
 export function UseSidebar() {
   const { chatsList, currentChat } = useChatListStore((state) => state);
-  console.log(currentChat);
   return (
     <Sidebar>
       <SidebarContent>
@@ -40,7 +39,7 @@ export function UseSidebar() {
                     className={clsx({ "bg-blue-100": currentChat === chat.id })}
                   >
                     <Link href={`chats?id=${chat.id}`}>
-                      <span>{chat.id}</span>
+                      <span>{chat.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

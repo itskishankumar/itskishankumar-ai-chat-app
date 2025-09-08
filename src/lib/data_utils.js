@@ -11,19 +11,30 @@ export async function getAllChatsData() {
 export async function getChatData(chatId) {
   if (chatId) {
     const chatData = await db.chats.get(chatId);
-    return JSON.parse(chatData?.data ?? []);
+    return JSON.parse(chatData?.data ?? "[]");
   }
 }
 
 export async function setChatData(chatId, { messages, model, title }) {
-  await db.chats.put({
-    id: chatId,
+  const updated = await db.chats.update(chatId, {
     ...(messages
       ? {
           data: JSON.stringify(messages),
         }
       : {}),
-    model,
-    title,
+    ...(model ? { model } : {}),
+    ...(title ? { title } : {}),
   });
+  if (!updated) {
+    await db.chats.add({
+      id: chatId,
+      ...(messages
+        ? {
+            data: JSON.stringify(messages),
+          }
+        : {}),
+      ...(model ? { model } : {}),
+      ...(title ? { title } : {}),
+    });
+  }
 }

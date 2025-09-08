@@ -5,7 +5,6 @@ import {
   parseModelToOurs,
   parseOursToModel,
 } from "@/lib/transformer";
-import { useRouter } from "next/navigation";
 import { getChatData, setChatData } from "@/lib/data_utils";
 import { v4 as uuidv4 } from "uuid";
 import { useChatListStore } from "@/store/useChatListStore";
@@ -15,8 +14,6 @@ const ai = new GoogleGenAI({
 });
 
 export function useChat(chatId, model) {
-  const router = useRouter();
-
   const [currentlyStreamingMessage, setCurrentlyStreamingMessage] =
     useState("");
   const [messages, setMessages] = useState([]);
@@ -71,6 +68,7 @@ export function useChat(chatId, model) {
         contents: `Generate a 3 word title summarising this query for an LLM - ${message}`,
       });
       const text = response.text;
+      await setChatData(id, { title: text });
     }
   }
 
