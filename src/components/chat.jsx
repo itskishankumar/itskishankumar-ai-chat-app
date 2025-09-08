@@ -2,9 +2,9 @@ import { Input } from "@/components/ui/input";
 import { useChat } from "@/hooks/use-chat";
 import { clsx } from "clsx";
 
-export default function Chat() {
+export default function Chat({ id }) {
   const { messages, currentlyStreamingMessage, sendMessage, generateImage } =
-    useChat("123", "gemini-2.5-flash-image-preview");
+    useChat(id, "gemini-2.5-flash-image-preview");
 
   async function handleEnter(input) {
     await sendMessage(input);

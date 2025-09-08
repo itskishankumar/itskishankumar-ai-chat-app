@@ -1,3 +1,5 @@
+"use client";
+
 import { MessageCirclePlus } from "lucide-react";
 
 import {
@@ -12,10 +14,12 @@ import {
 } from "@/components/ui/sidebar";
 
 import Link from "next/link";
-
-const items = [];
+import { useChatListStore } from "@/store/useChatListStore";
+import { clsx } from "clsx";
 
 export function UseSidebar() {
+  const { chatsList, currentChat } = useChatListStore((state) => state);
+  console.log(currentChat);
   return (
     <Sidebar>
       <SidebarContent>
@@ -29,13 +33,15 @@ export function UseSidebar() {
           <SidebarGroupLabel>Chats</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
+              {chatsList?.map((chat) => (
+                <SidebarMenuItem key={chat.id}>
+                  <SidebarMenuButton
+                    asChild
+                    className={clsx({ "bg-blue-100": currentChat === chat.id })}
+                  >
+                    <Link href={`chats?id=${chat.id}`}>
+                      <span>{chat.id}</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
