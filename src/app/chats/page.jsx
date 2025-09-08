@@ -3,11 +3,19 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 import Chat from "@/components/chat";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useChatListStore } from "@/store/useChatListStore";
+import { useSearchParams } from "next/navigation";
 
-export default function ChatPage() {
+export default function ChatPageSuspense() {
+  return (
+    <Suspense>
+      <ChatPage />
+    </Suspense>
+  );
+}
+
+export function ChatPage() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const setCurrentChat = useChatListStore((state) => state.setCurrentChat);
