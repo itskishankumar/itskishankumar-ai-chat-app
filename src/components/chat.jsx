@@ -3,13 +3,19 @@
 import { Input } from "@/components/ui/input";
 import { useChat } from "@/hooks/use-chat";
 import { clsx } from "clsx";
+import Spinner from "@/components/ui/spinner";
 
 export default function Chat({ id }) {
-  const { messages, currentlyStreamingMessage, sendMessage, generateImage } =
-    useChat(id, "gemini-2.5-flash-image-preview");
+  const {
+    loading,
+    messages,
+    currentlyStreamingMessage,
+    sendMessage,
+    generateImage,
+  } = useChat(id, "gemini-2.5-flash");
 
   async function handleEnter(input) {
-    await generateImage(input);
+    await sendMessage(input);
   }
 
   return (
@@ -39,10 +45,11 @@ export default function Chat({ id }) {
         </div>
         {/*TODO: Remove this duplication by extracting chat box to a separate component*/}
         {currentlyStreamingMessage && (
-          <div className="p-2 rounded-sm self-start bg-blue-100">
+          <div className="mt-2 p-2 rounded-sm self-start bg-blue-100">
             <div>{currentlyStreamingMessage}</div>
           </div>
         )}
+        {loading && <Spinner show={true} className="mt-8 text-blue-100" />}
       </div>
       <div className="w-full h-32 sticky bottom-0 bg-white flex justify-center items-center p-4">
         <Input

@@ -21,7 +21,6 @@ export function useChat(chatId, model) {
 
   const chatRef = useRef(null);
   const currentChatId = useRef(null);
-  const setCurrentChat = useChatListStore((state) => state.setCurrentChat);
   const refreshChatList = useChatListStore((state) => state.refreshChatList);
 
   useEffect(() => {
@@ -30,6 +29,7 @@ export function useChat(chatId, model) {
 
   async function init() {
     try {
+      setLoading(true);
       currentChatId.current = chatId;
       const chatData = await getChatData(chatId);
       setMessages(chatData ?? []);
@@ -40,6 +40,8 @@ export function useChat(chatId, model) {
       });
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -63,7 +65,6 @@ export function useChat(chatId, model) {
       const id = uuidv4();
       currentChatId.current = id;
       window.history.replaceState({}, "", `/chats?id=${id}`);
-      setCurrentChat(id);
       const response = await ai.models.generateContent({
         model,
         contents: `Generate a 3 word title summarising this query for an LLM - ${message}`,
@@ -75,14 +76,14 @@ export function useChat(chatId, model) {
   }
 
   async function sendMessage(message) {
-    generateTitle(message);
-    const prompt = generateUserPrompt(message);
-    setMessages([...messages, prompt]);
     try {
+      setLoading(true);
+      generateTitle(message);
+      const prompt = generateUserPrompt(message);
+      setMessages([...messages, prompt]);
       const stream = await chatRef.current.sendMessageStream({
         message,
       });
-      setLoading(true);
       let fullText = "";
       for await (const chunk of stream) {
         fullText += chunk.text;
@@ -102,11 +103,12 @@ export function useChat(chatId, model) {
   }
 
   async function generateImage(message) {
-    generateTitle(message);
-    const history = parseOursToModel(messages, model);
-    const prompt = generateUserPrompt(message);
-    setMessages([...messages, prompt]);
     try {
+      setLoading(true);
+      generateTitle(message);
+      const prompt = generateUserPrompt(message);
+      setMessages([...messages, prompt]);
+      const history = parseOursToModel(messages, model);
       const response = await ai.models.generateContent({
         model,
         contents: [...history, ...parseOursToModel([prompt], model)],
@@ -125,6 +127,8 @@ export function useChat(chatId, model) {
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   }
 
