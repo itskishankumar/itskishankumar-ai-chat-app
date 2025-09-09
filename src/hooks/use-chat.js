@@ -25,6 +25,8 @@ export function useChat(chatId) {
   const currentChatId = useRef(null);
   const refreshChatList = useChatListStore((state) => state.refreshChatList);
 
+  const dummyRefForScrollingRef = useRef(null);
+
   useEffect(() => {
     if (hydrated && currentChatId.current) {
       try {
@@ -33,8 +35,8 @@ export function useChat(chatId) {
         console.error(e);
       }
     }
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
+    // TODO: This doesn't work accurately all the time
+    dummyRefForScrollingRef.current?.scrollIntoView({
       behavior: "smooth",
     });
   }, [messages, model]);
@@ -154,5 +156,6 @@ export function useChat(chatId) {
     currentlyStreamingMessage,
     generateTextResponse,
     generateImageResponse,
+    dummyRefForScrollingRef,
   };
 }
