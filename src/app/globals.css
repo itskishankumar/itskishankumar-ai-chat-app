@@ -119,6 +119,11 @@
   }
 }
 
+:root {
+  scrollbar-color: theme('colors.blue.200') theme('colors.gray.50');
+  scrollbar-width: thin;
+}
+
 body {
   overflow: hidden;
 }

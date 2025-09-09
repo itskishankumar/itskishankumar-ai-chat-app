@@ -4,7 +4,6 @@ import { MessageCirclePlus } from "lucide-react";
 
 import {
   Sidebar,
-  SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -35,38 +34,34 @@ export function UseSidebar() {
 
   return (
     <Sidebar>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarMenuButton asChild>
-            <Link href="/">
-              <MessageCirclePlus />
-              <span>New Chat</span>
-            </Link>
-          </SidebarMenuButton>
-          <SidebarGroupLabel>Chats</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {chatsList?.map((chat) => (
-                <SidebarMenuItem key={chat.id}>
-                  <SidebarMenuButton
-                    asChild
-                    className={clsx({ "bg-blue-100": currentChat === chat.id })}
+      <SidebarGroup className="h-full">
+        <SidebarMenuButton asChild>
+          <Link href="/">
+            <MessageCirclePlus />
+            <span>New Chat</span>
+          </Link>
+        </SidebarMenuButton>
+        <SidebarGroupLabel>Chats</SidebarGroupLabel>
+        <SidebarGroupContent className="h-full overflow-auto">
+          <SidebarMenu>
+            {chatsList?.map((chat) => (
+              <SidebarMenuItem key={chat.id}>
+                <SidebarMenuButton
+                  asChild
+                  className={clsx({ "bg-blue-100": currentChat === chat.id })}
+                >
+                  <Link
+                    href={`/chats?id=${chat.id}`}
+                    onClick={(e) => handleLinkClick(e, `/chats?id=${chat.id}`)}
                   >
-                    <Link
-                      href={`/chats?id=${chat.id}`}
-                      onClick={(e) =>
-                        handleLinkClick(e, `/chats?id=${chat.id}`)
-                      }
-                    >
-                      <span>{chat.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
+                    <span>{chat.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
     </Sidebar>
   );
 }
