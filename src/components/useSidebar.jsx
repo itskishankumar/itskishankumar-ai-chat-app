@@ -16,9 +16,12 @@ import Link from "next/link";
 import { useChatListStore } from "@/store/useChatListStore";
 import { clsx } from "clsx";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import Spinner from "@/components/ui/spinner";
 
 export function UseSidebar() {
-  const { chatsList, currentChat } = useChatListStore((state) => state);
+  const { loading, chatsList, currentChat } = useChatListStore(
+    (state) => state,
+  );
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -44,6 +47,7 @@ export function UseSidebar() {
         <SidebarGroupLabel>Chats</SidebarGroupLabel>
         <SidebarGroupContent className="h-full overflow-auto">
           <SidebarMenu>
+            {loading && <Spinner show={true} className="mt-8 text-blue-100" />}
             {chatsList?.map((chat) => (
               <SidebarMenuItem key={chat.id}>
                 <SidebarMenuButton
