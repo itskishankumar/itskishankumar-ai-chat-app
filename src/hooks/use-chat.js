@@ -9,6 +9,7 @@ import { getChatData, getChatModel, setChatData } from "@/lib/data_utils";
 import { v4 as uuidv4 } from "uuid";
 import { useChatListStore } from "@/store/useChatListStore";
 import { modelTypes } from "@/lib/constants/models";
+import { toast } from "sonner";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY,
@@ -57,6 +58,7 @@ export function useChat(chatId) {
       setModel(chatModel);
     } catch (e) {
       console.error(e);
+      toast.warning("Something went wrong. Please try again later!");
     } finally {
       setHydrated(true);
       setLoading(false);
@@ -111,6 +113,7 @@ export function useChat(chatId) {
       setCurrentlyStreamingMessage("");
     } catch (e) {
       console.error(e);
+      toast.warning("Something went wrong. Please try again later!");
     } finally {
       setLoading(false);
     }
@@ -143,6 +146,7 @@ export function useChat(chatId) {
       }
     } catch (e) {
       console.error(e);
+      toast.warning("Something went wrong. Please try again later!");
     } finally {
       setLoading(false);
     }
