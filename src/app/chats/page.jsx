@@ -17,7 +17,7 @@ export default function ChatPageSuspense() {
 function ChatPage() {
   const { id } = useSetupRoute();
   return (
-    <div className="w-full h-screen overflow-y-auto">
+    <div className="w-full h-dvh overflow-y-auto">
       <SidebarTrigger className="sticky top-4 left-4" />
       <Chat id={id} />
     </div>
