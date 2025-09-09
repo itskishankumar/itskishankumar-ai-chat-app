@@ -22,7 +22,6 @@ export function useChat(chatId) {
   const [loading, setLoading] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
-  const chatRef = useRef(null);
   const currentChatId = useRef(null);
   const refreshChatList = useChatListStore((state) => state.refreshChatList);
 
@@ -54,11 +53,6 @@ export function useChat(chatId) {
       setMessages(chatData ?? []);
       const chatModel = (await getChatModel(chatId)) ?? model;
       setModel(chatModel);
-      const history = parseOursToModel(chatData ?? [], model);
-      chatRef.current = ai.chats.create({
-        model,
-        history,
-      });
     } catch (e) {
       console.error(e);
     } finally {
@@ -67,14 +61,21 @@ export function useChat(chatId) {
     }
   }
 
-  async function generateTitle(prompt) {
+  async function generateTitle(prompt, type) {
     if (!currentChatId.current) {
       const id = uuidv4();
       currentChatId.current = id;
       window.history.replaceState({}, "", `/chats?id=${id}`);
+      const generateTitlePrompt = generateUserPrompt(
+        "Generate a 3 word title summarising this query for an LLM -",
+        "text",
+      );
+      const serializedPrompt = generateUserPrompt(prompt, type);
       const response = await ai.models.generateContent({
         model: modelTypes.text.model,
-        contents: `Generate a 3 word title summarising this query for an LLM - ${prompt}`,
+        contents: [
+          ...parseOursToModel([generateTitlePrompt, serializedPrompt], model),
+        ],
       });
       const text = response.text;
       await setChatData(id, { title: text });
@@ -82,14 +83,18 @@ export function useChat(chatId) {
     }
   }
 
-  async function generateTextResponse(prompt) {
+  async function generateTextResponse(prompts) {
     try {
       setLoading(true);
-      generateTitle(prompt);
-      const serializedPrompt = generateUserPrompt(prompt);
-      setMessages([...messages, serializedPrompt]);
-      const stream = await chatRef.current.sendMessageStream({
-        message: prompt,
+      generateTitle(prompts[0].data, prompts[0].type);
+      const serializedPrompts = prompts.map((prompt) =>
+        generateUserPrompt(prompt.data, prompt.type),
+      );
+      const updatedMessages = [...messages, ...serializedPrompts];
+      setMessages(updatedMessages);
+      const stream = await ai.models.generateContentStream({
+        model,
+        contents: [...parseOursToModel(updatedMessages, model)],
       });
       let fullText = "";
       for await (const chunk of stream) {
@@ -109,15 +114,18 @@ export function useChat(chatId) {
     }
   }
 
-  async function generateImageResponse(prompt) {
+  async function generateImageResponse(prompts) {
     try {
       setLoading(true);
-      generateTitle(prompt);
-      const serializedPrompt = generateUserPrompt(prompt);
-      setMessages([...messages, serializedPrompt]);
+      generateTitle(prompts[0].data, prompts[0].type);
+      const serializedPrompts = prompts.map((prompt) =>
+        generateUserPrompt(prompt.data, prompt.type),
+      );
+      const updatedMessages = [...messages, ...serializedPrompts];
+      setMessages(updatedMessages);
       const response = await ai.models.generateContent({
         model,
-        contents: [...parseOursToModel([...messages, serializedPrompt], model)],
+        contents: [...parseOursToModel(updatedMessages, model)],
       });
       for (const part of response.candidates[0].content.parts) {
         let response;

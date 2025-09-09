@@ -1,7 +1,7 @@
-export function parseOursToModel(history) {
+export function parseOursToModel(message) {
   return {
-    role: history.role,
-    parts: history.data.map((dat) => oursToPromptMapper[dat.type](dat)),
+    role: message.role,
+    parts: message.data.map((dat) => oursToPromptMapper[dat.type](dat)),
   };
 }
 
@@ -17,6 +17,7 @@ function mapTextToTextPrompt(data) {
   };
 }
 
+// our format
 function mapTextResponseToText(data) {
   return {
     role: "model",
@@ -33,6 +34,7 @@ function mapImageToImagePrompt(data) {
   };
 }
 
+// our format
 function mapImageResponseToImage(inlineData) {
   return {
     role: "model",

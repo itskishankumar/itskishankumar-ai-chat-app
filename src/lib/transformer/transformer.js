@@ -3,15 +3,27 @@ import {
   parseModelToOurs as geminiParseModelToOurs,
 } from "@/lib/transformer/models/google-gemini";
 
-export function generateUserPrompt(message) {
-  return {
-    role: "user",
-    data: [{ type: "text", data: message }],
-  };
+// our format
+export function generateUserPrompt(data, type) {
+  switch (type) {
+    case "text":
+      return {
+        role: "user",
+        data: [{ type: "text", data: data }],
+      };
+    case "image/png":
+    case "image/jpeg":
+      return {
+        role: "user",
+        data: [{ type, data: data }],
+      };
+  }
 }
 
-export function parseOursToModel(history, model) {
-  return history.map((data) => modelToModelMappers[model].oursToModel(data));
+export function parseOursToModel(messages, model) {
+  return messages.map((message) =>
+    modelToModelMappers[model].oursToModel(message),
+  );
 }
 
 export function parseModelToOurs(response, model) {
