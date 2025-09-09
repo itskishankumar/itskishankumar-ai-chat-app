@@ -10,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 import Link from "next/link";
@@ -18,7 +19,7 @@ import { clsx } from "clsx";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import Spinner from "@/components/ui/spinner";
 
-export function UseSidebar() {
+export function AppSidebar() {
   const { loading, chatsList, currentChat } = useChatListStore(
     (state) => state,
   );
@@ -27,11 +28,14 @@ export function UseSidebar() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  const { setOpenMobile } = useSidebar();
+
   function handleLinkClick(e, route) {
     e.preventDefault();
     const fullUrl = pathname + "?" + searchParams.toString();
     if (fullUrl !== route) {
       router.push(route);
+      setOpenMobile(false);
     }
   }
 
@@ -39,7 +43,7 @@ export function UseSidebar() {
     <Sidebar>
       <SidebarGroup className="h-full">
         <SidebarMenuButton asChild>
-          <Link href="/">
+          <Link href="/" onClick={(e) => handleLinkClick(e, `/`)}>
             <MessageCirclePlus />
             <span>New Chat</span>
           </Link>
@@ -58,7 +62,7 @@ export function UseSidebar() {
                     href={`/chats?id=${chat.id}`}
                     onClick={(e) => handleLinkClick(e, `/chats?id=${chat.id}`)}
                   >
-                    <span>{chat.title}</span>
+                    <span>{chat.title ?? chat.id}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

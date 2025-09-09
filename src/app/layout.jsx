@@ -3,7 +3,7 @@
 import "./globals.css";
 
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { UseSidebar } from "@/components/useSidebar";
+import { AppSidebar } from "@/components/appSidebar";
 import { Suspense, useEffect } from "react";
 import { useChatListStore } from "@/store/useChatListStore";
 import { Toaster } from "sonner";
@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
       <body>
         <Suspense>
           <SidebarProvider>
-            <UseSidebar />
+            <AppSidebar />
             {children}
             <Toaster
               position="bottom-center"
