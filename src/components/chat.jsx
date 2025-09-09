@@ -99,7 +99,12 @@ export default function Chat({ id }) {
           {loading && <Spinner show={true} className="mt-8 text-blue-100" />}
           <div id="dummyRefForScrolling" ref={dummyRefForScrollingRef} />
         </div>
-        <div className="w-full min-h-32 sticky bottom-0 bg-white flex justify-center items-center p-4">
+        <div
+          className={clsx(
+            "w-full min-h-32 sticky bottom-0 bg-white flex justify-center items-center p-4",
+            { "min-h-46": imagePrompt },
+          )}
+        >
           <PromptBar
             handleEnter={generateResponse}
             handleImageSelection={handleImageSelection}
