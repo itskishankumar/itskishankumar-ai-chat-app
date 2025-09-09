@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { modelTypes } from "@/lib/constants/models";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function PromptBar({
   handleEnter,
@@ -24,6 +25,8 @@ export default function PromptBar({
   imagePrompt,
   disabled,
 }) {
+  const isMobile = useIsMobile();
+
   return (
     <div
       className={cn(
@@ -52,10 +55,10 @@ export default function PromptBar({
       />
 
       {imagePrompt && (
-        <div className="relative mr-4">
+        <div className="relative flex-shrink-0 mr-4">
           <img
             src={`data:${imagePrompt.type};base64,${imagePrompt.data}`}
-            className="h-24 object-cover rounded-sm"
+            className="h-24 w-24 object-fill rounded-sm"
           />
           <Trash2
             className="absolute z-1 top-2 right-2 text-white cursor-pointer"
@@ -76,7 +79,7 @@ export default function PromptBar({
         className="h-full"
       >
         <SelectTrigger className="h-full bg-gray-100 border-none focus:border-none focus-visible:ring-0 focus:outline-0 shadow-none">
-          <SelectValue />
+          {isMobile ? modelTypes[modelType].icon : <SelectValue />}
         </SelectTrigger>
         <SelectContent>
           {Object.entries(modelTypes).map(([type, { title, icon }]) => (

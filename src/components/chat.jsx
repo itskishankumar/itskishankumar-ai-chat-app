@@ -20,7 +20,7 @@ export default function Chat({ id }) {
     generateImageResponse,
   } = useChat(id);
 
-  const [modelType, setModelType] = useState("");
+  const [modelType, setModelType] = useState("text");
 
   const [imagePrompt, setImagePrompt] = useState(null);
 
