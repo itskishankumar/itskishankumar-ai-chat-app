@@ -19,16 +19,17 @@ Built using **NextJS** (React) outputting a close to pure SPA, ShadCN for the UI
 5. Usage of minimal bare bones api wherever possible (i.e useState), and usage of something more complex (ex Zustand) only when and where required
 
 ### Enhancements -
-1. Custom markdown parsing, as currently we're displaying the raw text that the LLM generates
-2. Sanitising the LLM output before appending it to the DOM
-3. Ability to delete chats
-4. Ability to modify a previous message, resetting conversation from that point
-5. Ability to auto select a text/image generation model based on users prompt
-6. Ability to move out of a chat after submitting a prompt, and coming back to it later (Currently, we're relying on a useEffect based on UI state to update our persistent storage. Ideally, this order should've been reversed. LLM -> Persistent storage -> UI State)
-7. Make the useChat hook generic of the Gemini API. Currently, I've hardcoded the useChat hook with gemini api, defeating the purpose of generic transformers.
-8. DexieJS automatically sorts the chats based on id, hence the latest chat doesn't show up on the top on the sidebar
-9. Reduce CLS on initial load
-10. Add a background to CTA buttons like the Sidebar trigger and Delete button on uploading an image, as they can look invisible due to low contrast
+1. Multi line ability on the prompt input bar by hitting "Shift + Enter"
+2. Custom markdown parsing, as currently we're displaying the raw text that the LLM generates
+3. Sanitising the LLM output before appending it to the DOM
+4. Ability to delete chats
+5. Ability to modify a previous message, resetting conversation from that point
+6. Ability to auto select a text/image generation model based on users prompt
+7. Ability to move out of a chat after submitting a prompt, and coming back to it later (Currently, we're relying on a useEffect based on UI state to update our persistent storage. Ideally, this order should've been reversed. LLM -> Persistent storage -> UI State)
+8. Make the useChat hook generic of the Gemini API. Currently, I've hardcoded the useChat hook with gemini api, defeating the purpose of generic transformers.
+9. DexieJS automatically sorts the chats based on id, hence the latest chat doesn't show up on the top on the sidebar
+10. Reduce CLS on initial load
+11. Add a background to CTA buttons like the Sidebar trigger and Delete button on uploading an image, as they can look invisible due to low contrast
 
 ### Known bugs - 
 1. Clicking on "New Chat" button after generating a new chat doesn't cause a redirect
