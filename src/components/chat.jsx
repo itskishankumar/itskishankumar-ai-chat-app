@@ -1,5 +1,3 @@
-"use client";
-
 import { useChat } from "@/hooks/use-chat";
 import { clsx } from "clsx";
 import Spinner from "@/components/ui/spinner";

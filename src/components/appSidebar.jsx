@@ -1,5 +1,3 @@
-"use client";
-
 import { MessageCirclePlus } from "lucide-react";
 
 import {

@@ -4,17 +4,8 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 
 import Chat from "@/components/chat";
 import { useSetupRoute } from "@/hooks/use-setup-route";
-import { Suspense } from "react";
 
-export default function HomePageSuspense() {
-  return (
-    <Suspense>
-      <HomePage />
-    </Suspense>
-  );
-}
-
-function HomePage() {
+export default function HomePage() {
   useSetupRoute();
   return (
     <div

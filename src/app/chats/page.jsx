@@ -3,18 +3,9 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 import Chat from "@/components/chat";
-import { Suspense } from "react";
 import { useSetupRoute } from "@/hooks/use-setup-route";
 
-export default function ChatPageSuspense() {
-  return (
-    <Suspense>
-      <ChatPage />
-    </Suspense>
-  );
-}
-
-function ChatPage() {
+export default function ChatPage() {
   const { id } = useSetupRoute();
   return (
     <div
