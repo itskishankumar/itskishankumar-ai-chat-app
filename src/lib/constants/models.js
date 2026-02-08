@@ -9,7 +9,7 @@ export const modelTypes = {
   image: {
     title: "Image mode",
     icon: <Image />,
-    model: "gemini-2.5-flash-image-preview",
+    model: "gemini-2.5-flash-image",
   },
 };
 
