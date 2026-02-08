@@ -152,6 +152,19 @@ export function useChat(chatId) {
     }
   }
 
+  function injectChat(chatMessages) {
+    if (chatMessages && Array.isArray(chatMessages)) {
+      // Mark injected messages as hidden so they don't show in UI but are sent to the model
+      const hiddenMessages = chatMessages.map((msg) => ({
+        ...msg,
+        _hidden: true,
+      }));
+
+      setMessages((prevMessages) => [...prevMessages, ...hiddenMessages]);
+      toast.success("Chat context injected successfully!");
+    }
+  }
+
   return {
     loading,
     model,
@@ -160,6 +173,7 @@ export function useChat(chatId) {
     currentlyStreamingMessage,
     generateTextResponse,
     generateImageResponse,
+    injectChat,
     dummyRefForScrollingRef,
   };
 }
