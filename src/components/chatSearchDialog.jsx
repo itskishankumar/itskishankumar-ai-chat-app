@@ -59,7 +59,7 @@ export default function ChatSearchDialog({ open, onOpenChange, onInjectChat }) {
       try {
         const chatData = await getChatData(chatId);
         if (chatData && onInjectChat) {
-          onInjectChat(chatData);
+          onInjectChat(chatData, chatId);
           onOpenChange(false);
         }
       } catch (e) {

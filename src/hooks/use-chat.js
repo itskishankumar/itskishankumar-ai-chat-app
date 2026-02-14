@@ -24,6 +24,7 @@ export function useChat(chatId) {
   const [hydrated, setHydrated] = useState(false);
 
   const currentChatId = useRef(null);
+  const injectedChatIds = useRef(new Set());
   const refreshChatList = useChatListStore((state) => state.refreshChatList);
 
   const dummyRefForScrollingRef = useRef(null);
@@ -52,6 +53,7 @@ export function useChat(chatId) {
       setMessages([]);
       setLoading(true);
       currentChatId.current = chatId;
+      injectedChatIds.current = new Set();
       const chatData = await getChatData(chatId);
       setMessages(chatData ?? []);
       const chatModel = (await getChatModel(chatId)) ?? model;
@@ -152,8 +154,19 @@ export function useChat(chatId) {
     }
   }
 
-  function injectChat(chatMessages) {
+  function injectChat(chatMessages, chatId) {
     if (chatMessages && Array.isArray(chatMessages)) {
+      // Check if this chat was already injected
+      if (chatId && injectedChatIds.current.has(chatId)) {
+        toast.warning("This chat is already in context!");
+        return;
+      }
+
+      // Track this chat so we don't inject it again
+      if (chatId) {
+        injectedChatIds.current.add(chatId);
+      }
+
       // Mark injected messages as hidden so they don't show in UI but are sent to the model
       const hiddenMessages = chatMessages.map((msg) => ({
         ...msg,

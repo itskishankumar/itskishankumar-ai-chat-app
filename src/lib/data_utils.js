@@ -32,6 +32,9 @@ export async function searchChatsByContent(query) {
       const matchingSnippets = [];
 
       for (const message of messages) {
+        // Skip hidden/injected messages
+        if (message._hidden) continue;
+
         if (message.data) {
           for (const item of message.data) {
             if (item.type === "text" && item.data) {
