@@ -4,7 +4,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Paperclip, Trash2 } from "lucide-react";
+import { Merge, Paperclip, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -20,6 +20,7 @@ export default function PromptBar({
   handleEnter,
   handleImageSelection,
   deleteImageSelection,
+  setSearchDialogOpen,
   modelType,
   changeModelType,
   imagePrompt,
@@ -38,11 +39,25 @@ export default function PromptBar({
       <Tooltip>
         <TooltipTrigger>
           <label htmlFor="file-upload">
-            <Paperclip className="mr-4 cursor-pointer" />
+            <Paperclip className="mr-2 cursor-pointer" />
           </label>
         </TooltipTrigger>
         <TooltipContent>
           <p>Add image</p>
+        </TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger>
+          <button
+            onClick={() => setSearchDialogOpen(true)}
+            className="p-2 rounded-lg hover:bg-slate-100 transition-colors text-slate-500 hover:text-slate-700"
+            aria-label="Load chat into context"
+          >
+            <Merge className="mr-4" />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Load another chat into context</p>
         </TooltipContent>
       </Tooltip>
       <Input

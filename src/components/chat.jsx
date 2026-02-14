@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 import PromptBar from "@/components/promptBar";
 import ChatSearchDialog from "@/components/chatSearchDialog";
-import { FolderSearch } from "lucide-react";
+import { Merge } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -80,23 +80,7 @@ export default function Chat({ id }) {
         onInjectChat={injectChat}
       />
       <div className="w-full h-full lg:w-1/2 flex flex-col items-center justify-between">
-        <div className="w-full pt-12 flex flex-col p-4 ">
-          <div className="flex justify-end mb-2">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => setSearchDialogOpen(true)}
-                  className="p-2 rounded-lg hover:bg-slate-100 transition-colors text-slate-500 hover:text-slate-700"
-                  aria-label="Load chat into context"
-                >
-                  <FolderSearch className="w-5 h-5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Load another chat into context</p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
+        <div className="w-full pt-12 flex flex-col p-4">
           <div className="flex flex-col gap-4">
             {messages
               .filter((message) => !message._hidden)
@@ -148,6 +132,7 @@ export default function Chat({ id }) {
             handleEnter={generateResponse}
             handleImageSelection={handleImageSelection}
             deleteImageSelection={deleteImageSelection}
+            setSearchDialogOpen={setSearchDialogOpen}
             modelType={modelType}
             changeModelType={changeModelType}
             imagePrompt={imagePrompt}

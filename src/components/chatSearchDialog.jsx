@@ -9,7 +9,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { searchChats, getChatData } from "@/lib/data_utils";
-import { Search, MessageSquare, FileText } from "lucide-react";
 import { cn, stripMarkdown } from "@/lib/utils";
 import Spinner from "@/components/ui/spinner";
 import ReactMarkdown from "react-markdown";
@@ -29,8 +28,9 @@ export default function ChatSearchDialog({ open, onOpenChange, onInjectChat }) {
       return;
     }
 
+    setSearching(true);
+
     const timeoutId = setTimeout(async () => {
-      setSearching(true);
       try {
         const searchResults = await searchChats(query);
         setResults(searchResults);
@@ -75,23 +75,18 @@ export default function ChatSearchDialog({ open, onOpenChange, onInjectChat }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Search className="w-5 h-5" />
-            Load Chat into Context
-          </DialogTitle>
+          <DialogTitle>Load Chat into Context</DialogTitle>
           <DialogDescription>
             Search by chat name or content to inject into current conversation
           </DialogDescription>
         </DialogHeader>
 
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Search chats by name or content..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full pl-4 pr-4 py-3 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
             autoFocus
           />
         </div>
@@ -105,7 +100,6 @@ export default function ChatSearchDialog({ open, onOpenChange, onInjectChat }) {
 
           {!searching && query && results.length === 0 && (
             <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
-              <FileText className="w-12 h-12 mb-2" />
               <p>No chats found matching &quot;{query}&quot;</p>
             </div>
           )}
@@ -123,40 +117,37 @@ export default function ChatSearchDialog({ open, onOpenChange, onInjectChat }) {
                     selectedChat === result.id && "border-blue-400 bg-accent",
                   )}
                 >
-                  <div className="flex items-start gap-3">
-                    <MessageSquare className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-foreground truncate">
-                        {stripMarkdown(result.title) || "Untitled Chat"}
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-0.5">
-                        {result.matchType === "title"
-                          ? "Matched by name"
-                          : "Matched by content"}
-                      </div>
-                      {result.snippets && result.snippets.length > 0 && (
-                        <div className="mt-2 space-y-1">
-                          {result.snippets.map((snippet, idx) => (
-                            <div
-                              key={idx}
-                              className={cn(
-                                "text-sm p-2 rounded text-foreground markdown-content",
-                                snippet.role === "user"
-                                  ? "bg-gray-100"
-                                  : "bg-blue-100",
-                              )}
-                            >
-                              <span className="text-xs font-medium text-muted-foreground mr-1">
-                                {snippet.role === "user" ? "You:" : "AI:"}
-                              </span>
-                              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                {snippet.snippet}
-                              </ReactMarkdown>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-foreground truncate">
+                      {stripMarkdown(result.title) || "Untitled Chat"}
                     </div>
+                    <div className="text-xs text-muted-foreground mt-0.5">
+                      {result.matchType === "title"
+                        ? "Matched by name"
+                        : "Matched by content"}
+                    </div>
+                    {result.snippets && result.snippets.length > 0 && (
+                      <div className="mt-2 space-y-1">
+                        {result.snippets.map((snippet, idx) => (
+                          <div
+                            key={idx}
+                            className={cn(
+                              "text-sm p-2 rounded text-foreground markdown-content",
+                              snippet.role === "user"
+                                ? "bg-gray-100"
+                                : "bg-blue-100",
+                            )}
+                          >
+                            <span className="text-xs font-medium text-muted-foreground mr-1">
+                              {snippet.role === "user" ? "You:" : "AI:"}
+                            </span>
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                              {snippet.snippet}
+                            </ReactMarkdown>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </button>
               ))}
@@ -165,7 +156,6 @@ export default function ChatSearchDialog({ open, onOpenChange, onInjectChat }) {
 
           {!searching && !query && (
             <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
-              <Search className="w-12 h-12 mb-2" />
               <p>Start typing to search your chats</p>
             </div>
           )}
