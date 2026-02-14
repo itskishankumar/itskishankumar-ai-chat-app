@@ -1,6 +1,8 @@
 import { useChat } from "@/hooks/use-chat";
 import { clsx } from "clsx";
 import Spinner from "@/components/ui/spinner";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import { getTypeFromModel, modelTypes } from "@/lib/constants/models";
 import { useEffect, useState } from "react";
@@ -108,7 +110,11 @@ export default function Chat({ id }) {
                 >
                   {message.data.map((data, index2) =>
                     data.type === "text" ? (
-                      <div key={index2}>{data.data}</div>
+                      <div key={index2} className="markdown-content">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {data.data}
+                        </ReactMarkdown>
+                      </div>
                     ) : (
                       <img
                         key={index2}
@@ -122,7 +128,11 @@ export default function Chat({ id }) {
           {/*TODO: Remove this duplication by extracting chat box to a separate component*/}
           {currentlyStreamingMessage && (
             <div className="mt-2 p-2 rounded-sm self-start bg-blue-100">
-              <div>{currentlyStreamingMessage}</div>
+              <div className="markdown-content">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {currentlyStreamingMessage}
+                </ReactMarkdown>
+              </div>
             </div>
           )}
           {loading && <Spinner show={true} className="mt-8 text-blue-100" />}

@@ -10,8 +10,10 @@ import {
 } from "@/components/ui/dialog";
 import { searchChats, getChatData } from "@/lib/data_utils";
 import { Search, MessageSquare, FileText } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, stripMarkdown } from "@/lib/utils";
 import Spinner from "@/components/ui/spinner";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function ChatSearchDialog({ open, onOpenChange, onInjectChat }) {
   const [query, setQuery] = useState("");
@@ -125,7 +127,7 @@ export default function ChatSearchDialog({ open, onOpenChange, onInjectChat }) {
                     <MessageSquare className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div className="font-medium text-foreground truncate">
-                        {result.title || "Untitled Chat"}
+                        {stripMarkdown(result.title) || "Untitled Chat"}
                       </div>
                       <div className="text-xs text-muted-foreground mt-0.5">
                         {result.matchType === "title"
@@ -138,7 +140,7 @@ export default function ChatSearchDialog({ open, onOpenChange, onInjectChat }) {
                             <div
                               key={idx}
                               className={cn(
-                                "text-sm p-2 rounded text-foreground",
+                                "text-sm p-2 rounded text-foreground markdown-content",
                                 snippet.role === "user"
                                   ? "bg-gray-100"
                                   : "bg-blue-100",
@@ -147,7 +149,9 @@ export default function ChatSearchDialog({ open, onOpenChange, onInjectChat }) {
                               <span className="text-xs font-medium text-muted-foreground mr-1">
                                 {snippet.role === "user" ? "You:" : "AI:"}
                               </span>
-                              {snippet.snippet}
+                              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                {snippet.snippet}
+                              </ReactMarkdown>
                             </div>
                           ))}
                         </div>
