@@ -35,7 +35,7 @@ const modelToModelMappers = {
     oursToModel: geminiParseOursToModel,
     modelToOurs: geminiParseModelToOurs,
   },
-  "gemini-2.5-flash-image-preview": {
+  "gemini-2.5-flash-image": {
     oursToModel: geminiParseOursToModel,
     modelToOurs: geminiParseModelToOurs,
   },

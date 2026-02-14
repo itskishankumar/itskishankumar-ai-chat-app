@@ -16,6 +16,7 @@ import { useChatListStore } from "@/store/useChatListStore";
 import { clsx } from "clsx";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import Spinner from "@/components/ui/spinner";
+import { stripMarkdown } from "@/lib/utils";
 
 export function AppSidebar() {
   const { loading, chatsList, currentChat } = useChatListStore(
@@ -60,7 +61,7 @@ export function AppSidebar() {
                     href={`/chats?id=${chat.id}`}
                     onClick={(e) => handleLinkClick(e, `/chats?id=${chat.id}`)}
                   >
-                    <span>{chat.title ?? chat.id}</span>
+                    <span>{stripMarkdown(chat.title) ?? chat.id}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

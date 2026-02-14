@@ -1,11 +1,20 @@
 import { useChat } from "@/hooks/use-chat";
 import { clsx } from "clsx";
 import Spinner from "@/components/ui/spinner";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import { getTypeFromModel, modelTypes } from "@/lib/constants/models";
 import { useEffect, useState } from "react";
 
 import PromptBar from "@/components/promptBar";
+import ChatSearchDialog from "@/components/chatSearchDialog";
+import { FolderSearch } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function Chat({ id }) {
   const {
@@ -16,12 +25,13 @@ export default function Chat({ id }) {
     currentlyStreamingMessage,
     generateTextResponse,
     generateImageResponse,
+    injectChat,
     dummyRefForScrollingRef,
   } = useChat(id);
 
   const [modelType, setModelType] = useState("text");
-
   const [imagePrompt, setImagePrompt] = useState(null);
+  const [searchDialogOpen, setSearchDialogOpen] = useState(false);
 
   useEffect(() => {
     setModelType(getTypeFromModel(model));
@@ -64,34 +74,65 @@ export default function Chat({ id }) {
   // hence causing the scroll bar to show even when there's no content
   return (
     <div className="-mt-8 w-full h-full flex flex-col items-center">
+      <ChatSearchDialog
+        open={searchDialogOpen}
+        onOpenChange={setSearchDialogOpen}
+        onInjectChat={injectChat}
+      />
       <div className="w-full h-full lg:w-1/2 flex flex-col items-center justify-between">
         <div className="w-full pt-12 flex flex-col p-4 ">
+          <div className="flex justify-end mb-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => setSearchDialogOpen(true)}
+                  className="p-2 rounded-lg hover:bg-slate-100 transition-colors text-slate-500 hover:text-slate-700"
+                  aria-label="Load chat into context"
+                >
+                  <FolderSearch className="w-5 h-5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Load another chat into context</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
           <div className="flex flex-col gap-4">
-            {messages.map((message, index1) => (
-              <div
-                key={index1}
-                className={clsx("p-2 rounded-sm ", {
-                  "self-end bg-gray-100": message.role === "user",
-                  "self-start bg-blue-100": message.role === "model",
-                })}
-              >
-                {message.data.map((data, index2) =>
-                  data.type === "text" ? (
-                    <div key={index2}>{data.data}</div>
-                  ) : (
-                    <img
-                      key={index2}
-                      src={`data:${data.type};base64,${data.data}`}
-                    />
-                  ),
-                )}
-              </div>
-            ))}
+            {messages
+              .filter((message) => !message._hidden)
+              .map((message, index1) => (
+                <div
+                  key={index1}
+                  className={clsx("p-2 rounded-sm ", {
+                    "self-end bg-gray-100": message.role === "user",
+                    "self-start bg-blue-100": message.role === "model",
+                  })}
+                >
+                  {message.data.map((data, index2) =>
+                    data.type === "text" ? (
+                      <div key={index2} className="markdown-content">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {data.data}
+                        </ReactMarkdown>
+                      </div>
+                    ) : (
+                      <img
+                        key={index2}
+                        src={`data:${data.type};base64,${data.data}`}
+                      />
+                    ),
+                  )}
+                </div>
+              ))}
           </div>
           {/*TODO: Remove this duplication by extracting chat box to a separate component*/}
           {currentlyStreamingMessage && (
             <div className="mt-2 p-2 rounded-sm self-start bg-blue-100">
-              <div>{currentlyStreamingMessage}</div>
+              <div className="markdown-content">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {currentlyStreamingMessage}
+                </ReactMarkdown>
+              </div>
             </div>
           )}
           {loading && <Spinner show={true} className="mt-8 text-blue-100" />}
