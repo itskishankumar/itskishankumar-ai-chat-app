@@ -50,7 +50,7 @@ export default function PromptBar({
         <TooltipTrigger>
           <button
             onClick={() => setSearchDialogOpen(true)}
-            className="p-2 rounded-lg hover:bg-slate-100 transition-colors text-slate-500 hover:text-slate-700"
+            className="p-2 rounded-lg bg-slate-100 transition-colors text-slate-700 cursor-pointer"
             aria-label="Load chat into context"
           >
             <Merge className="mr-4" />
@@ -92,12 +92,12 @@ export default function PromptBar({
         value={modelType}
         className="h-full"
       >
-        <SelectTrigger className="h-full bg-gray-100 border-none focus:border-none focus-visible:ring-0 focus:outline-0 shadow-none">
+        <SelectTrigger className="h-full bg-gray-100 border-none focus:border-none focus-visible:ring-0 focus:outline-0 shadow-none cursor-pointer">
           {isMobile ? modelTypes[modelType].icon : <SelectValue />}
         </SelectTrigger>
         <SelectContent>
           {Object.entries(modelTypes).map(([type, { title, icon }]) => (
-            <SelectItem key={type} value={type}>
+            <SelectItem key={type} value={type} className="cursor-pointer">
               {icon}
               {title}
             </SelectItem>

@@ -14,7 +14,7 @@ import Spinner from "@/components/ui/spinner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-export default function ChatSearchDialog({ open, onOpenChange, onInjectChat }) {
+export default function InjectChatDialog({ open, onOpenChange, onInjectChat }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [searching, setSearching] = useState(false);

@@ -8,13 +8,7 @@ import { getTypeFromModel, modelTypes } from "@/lib/constants/models";
 import { useEffect, useState } from "react";
 
 import PromptBar from "@/components/promptBar";
-import ChatSearchDialog from "@/components/chatSearchDialog";
-import { Merge } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import InjectChatDialog from "@/components/injectChatDialog";
 
 export default function Chat({ id }) {
   const {
@@ -31,7 +25,7 @@ export default function Chat({ id }) {
 
   const [modelType, setModelType] = useState("text");
   const [imagePrompt, setImagePrompt] = useState(null);
-  const [searchDialogOpen, setSearchDialogOpen] = useState(false);
+  const [injectChatDialogOpen, setInjectChatDialogOpen] = useState(false);
 
   useEffect(() => {
     setModelType(getTypeFromModel(model));
@@ -74,9 +68,9 @@ export default function Chat({ id }) {
   // hence causing the scroll bar to show even when there's no content
   return (
     <div className="-mt-8 w-full h-full flex flex-col items-center">
-      <ChatSearchDialog
-        open={searchDialogOpen}
-        onOpenChange={setSearchDialogOpen}
+      <InjectChatDialog
+        open={injectChatDialogOpen}
+        onOpenChange={setInjectChatDialogOpen}
         onInjectChat={injectChat}
       />
       <div className="w-full h-full lg:w-1/2 flex flex-col items-center justify-between">
@@ -132,7 +126,7 @@ export default function Chat({ id }) {
             handleEnter={generateResponse}
             handleImageSelection={handleImageSelection}
             deleteImageSelection={deleteImageSelection}
-            setSearchDialogOpen={setSearchDialogOpen}
+            setSearchDialogOpen={setInjectChatDialogOpen}
             modelType={modelType}
             changeModelType={changeModelType}
             imagePrompt={imagePrompt}
